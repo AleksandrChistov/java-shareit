@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.practicum.shareit.core.error.exception.DuplicateDataException;
+import ru.practicum.shareit.core.error.exception.LackOfRightsException;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 
 @ControllerAdvice
@@ -34,6 +35,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
         return getResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(LackOfRightsException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(LackOfRightsException ex) {
+        return getResponseEntity(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

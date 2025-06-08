@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(Long userId, UpdateUserDto userDto) {
-        UserDto oldDto = getById(userId); // проверка на существование пользователя
+        UserDto oldDto = getById(userId);
         checkDuplicatedEmail(userDto.getEmail());
 
         User updated = repository.update(UserMapper.updateUser(oldDto, userDto));
