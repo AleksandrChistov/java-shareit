@@ -9,6 +9,13 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.mapper.ItemRequestMapper;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.util.ArrayList;
@@ -20,6 +27,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
     private final UserServiceImpl userService;
+    private final ItemRequestService itemRequestService;
 
     @Override
     public List<ItemDto> getAllByOwner(Long ownerId) {
@@ -48,9 +56,22 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto create(Long ownerId, ItemDto itemDto) {
-        // todo: get ItemRequest for this item and add it to ItemMapper.toItem or null if is not found
         userService.getById(ownerId); // проверка что пользователь существует
-        Item item = ItemMapper.toItem(itemDto, ownerId, null);
+
+        ItemRequest itemRequest = null;
+        if (itemDto.getRequestId() != null) {
+            ItemRequestDto itemRequestDto = itemRequestService.getById(itemDto.getRequestId());
+
+            User requestor = null;
+            if (itemRequestDto.getRequestorId() != null) {
+                UserDto requestorDto = userService.getById(itemRequestDto.getRequestorId());
+                requestor = UserMapper.toUser(requestorDto);
+            }
+
+            itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, requestor);
+        }
+
+        Item item = ItemMapper.toItem(itemDto, ownerId, itemRequest);
 
         Item created = repository.create(item);
 
