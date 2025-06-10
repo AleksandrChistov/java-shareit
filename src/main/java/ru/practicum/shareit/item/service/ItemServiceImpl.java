@@ -9,14 +9,11 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.mapper.ItemRequestMapper;
+import ru.practicum.shareit.item.utils.ItemUtils;
+import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.dao.UserRepository;
+import ru.practicum.shareit.user.utils.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,20 +22,20 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final ItemRepository repository;
-    private final UserServiceImpl userService;
-    private final ItemRequestService itemRequestService;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     public List<ItemDto> getAllByOwner(Long ownerId) {
-        return repository.getAllByOwner(ownerId).stream()
+        return itemRepository.getAllByOwner(ownerId).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemDto getById(Long itemId) {
-        return repository.getById(itemId)
+        return itemRepository.getById(itemId)
                 .map(ItemMapper::toItemDto)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));
     }
@@ -49,45 +46,39 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
 
-        return repository.searchAll(text).stream()
+        return itemRepository.searchAll(text).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemDto create(Long ownerId, ItemDto itemDto) {
-        userService.getById(ownerId); // проверка что пользователь существует
+        userRepository.getById(ownerId)
+                .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(ownerId)));
 
         ItemRequest itemRequest = null;
         if (itemDto.getRequestId() != null) {
-            ItemRequestDto itemRequestDto = itemRequestService.getById(itemDto.getRequestId());
-
-            User requestor = null;
-            if (itemRequestDto.getRequestorId() != null) {
-                UserDto requestorDto = userService.getById(itemRequestDto.getRequestorId());
-                requestor = UserMapper.toUser(requestorDto);
-            }
-
-            itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, requestor);
+            itemRequest = itemRequestRepository.getById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("Запрос с id = " + itemDto.getRequestId() + " для вещи не найден"));
         }
 
         Item item = ItemMapper.toItem(itemDto, ownerId, itemRequest);
 
-        Item created = repository.create(item);
+        Item created = itemRepository.create(item);
 
         return ItemMapper.toItemDto(created);
     }
 
     @Override
     public ItemDto update(Long ownerId, Long itemId, UpdateItemDto itemDto) {
-        Item oldItem = repository.getById(itemId)
+        Item oldItem = itemRepository.getById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemDto.getId() + " не найдена"));
 
         if (!ownerId.equals(oldItem.getOwnerId())) {
             throw new LackOfRightsException("Редактировать вещь может только её владелец");
         }
 
-        Item updated = repository.update(ItemMapper.updateItem(oldItem, itemDto));
+        Item updated = itemRepository.update(ItemUtils.updateItem(oldItem, itemDto));
 
         return ItemMapper.toItemDto(updated);
     }

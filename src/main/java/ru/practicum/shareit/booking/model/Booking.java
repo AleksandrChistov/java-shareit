@@ -15,10 +15,19 @@ import java.time.LocalDateTime;
 public class Booking {
     @EqualsAndHashCode.Include
     private Long id;
-    private final LocalDateTime start;
-    private final LocalDateTime end;
-    private final Item item;
-    private final User booker;
-    private final BookingStatus status;
-    private final String feedback;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private Item item;
+    private User booker;
+    private BookingStatus status;
+    private String feedback;
+
+    public Booking(LocalDateTime start, LocalDateTime end, Item item, User booker, BookingStatus status, String feedback) {
+        this.start = start;
+        this.end = end;
+        this.item = item;
+        this.booker = booker;
+        this.status = status;
+        this.feedback = feedback;
+    }
 }

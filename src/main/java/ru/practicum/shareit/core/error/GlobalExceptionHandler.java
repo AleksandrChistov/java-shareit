@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(LackOfRightsException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(LackOfRightsException ex) {
+    public ResponseEntity<ErrorResponse> handleForbidden(LackOfRightsException ex) {
         return getResponseEntity(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 

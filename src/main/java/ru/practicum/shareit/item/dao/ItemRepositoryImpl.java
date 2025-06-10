@@ -28,7 +28,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<Item> searchAll(String text) {
         return items.values().stream()
                 .flatMap(Collection::stream)
-                .filter(Item::isAvailable)
+                .filter(Item::getAvailable)
                 .filter(i -> (i.getName().toLowerCase().contains(text.toLowerCase())
                         || i.getDescription().toLowerCase().contains(text.toLowerCase())))
                 .collect(Collectors.toList());

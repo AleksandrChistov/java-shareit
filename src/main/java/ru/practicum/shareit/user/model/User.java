@@ -10,6 +10,11 @@ import lombok.EqualsAndHashCode;
 public class User {
     @EqualsAndHashCode.Include
     private Long id;
-    private final String name;
-    private final String email;
+    private String name;
+    private String email;
+
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 }

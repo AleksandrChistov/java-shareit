@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.utils.UserUtils;
 
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getById(Long userId) {
         return repository.getById(userId)
                 .map(UserMapper::toUserDto)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+                .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(userId)));
     }
 
     @Override
@@ -40,10 +41,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(Long userId, UpdateUserDto userDto) {
-        UserDto oldDto = getById(userId);
+        User oldUser = repository.getById(userId)
+                .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(userId)));
+
         checkDuplicatedEmail(userDto.getEmail());
 
-        User updated = repository.update(UserMapper.updateUser(oldDto, userDto));
+        User updated = repository.update(UserUtils.updateUser(oldUser, userDto));
 
         return UserMapper.toUserDto(updated);
     }
