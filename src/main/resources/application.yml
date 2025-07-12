@@ -9,8 +9,8 @@ spring:
       jdbc.time_zone: UTC
   sql.init.mode: always
   datasource:
-    username: ${DB_USERNAME:dbuser}
-    password: ${DB_PASSWORD:12345}
+    username: dbuser
+    password: 12345
     url: "jdbc:postgresql://localhost:5432/shareit"
     driver-class-name: "org.postgresql.Driver"
 
