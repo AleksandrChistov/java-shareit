@@ -1,0 +1,22 @@
+spring:
+  application.name: shareIt
+  main.banner-mode: OFF
+  jpa:
+    show-sql: true
+    hibernate.ddl-auto: validate
+    properties.hibernate:
+      format_sql: true
+      jdbc.time_zone: UTC
+  sql.init.mode: always
+  datasource:
+    username: ${DB_USERNAME:dbuser}
+    password: ${DB_PASSWORD:12345}
+    url: "jdbc:postgresql://localhost:5432/shareit"
+    driver-class-name: "org.postgresql.Driver"
+
+logging.level.org.springframework:
+  orm:
+    jpa: INFO
+    jpa.JpaTransactionManager: DEBUG
+  transaction: INFO
+  transaction.interceptor: DEBUG
