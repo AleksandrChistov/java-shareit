@@ -26,5 +26,4 @@ public class BookingDto {
     @Positive
     private final Long bookerId;
     private final BookingStatus status;
-    private final String feedback;
 }

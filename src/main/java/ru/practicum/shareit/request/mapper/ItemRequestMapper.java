@@ -6,6 +6,9 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 @UtilityClass
 public class ItemRequestMapper {
 
@@ -14,17 +17,15 @@ public class ItemRequestMapper {
                 itemRequest.getId(),
                 itemRequest.getDescription(),
                 itemRequest.getRequestor() != null ? itemRequest.getRequestor().getId() : null,
-                itemRequest.getCreated()
+                LocalDateTime.ofInstant(itemRequest.getCreated(), ZoneOffset.UTC)
         );
     }
 
     public ItemRequest toItemRequest(ItemRequestDto itemRequestDto, User requestor) {
-        return new ItemRequest(
-                itemRequestDto.getId(),
-                itemRequestDto.getDescription(),
-                requestor,
-                itemRequestDto.getCreated()
-        );
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setDescription(itemRequestDto.getDescription());
+        itemRequest.setRequestor(requestor);
+        return itemRequest;
     }
 
 }

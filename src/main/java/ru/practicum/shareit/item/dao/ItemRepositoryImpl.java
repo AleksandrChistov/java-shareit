@@ -36,11 +36,11 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item create(Item item) {
-        List<Item> ownerItems = getAllByOwner(item.getOwnerId());
+        List<Item> ownerItems = getAllByOwner(item.getOwner().getId());
 
         item.setId(++id);
         ownerItems.add(item);
-        items.putIfAbsent(item.getOwnerId(), ownerItems);
+        items.putIfAbsent(item.getOwner().getId(), ownerItems);
 
         return item;
     }
@@ -48,7 +48,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public Item update(Item item) {
         // todo: will be removed after JPA implementation
-        List<Item> ownerItems = getAllByOwner(item.getOwnerId());
+        List<Item> ownerItems = getAllByOwner(item.getOwner().getId());
 
         ownerItems.remove(item);
         ownerItems.add(item);

@@ -13,5 +13,4 @@ public class UpdateBookingDto {
     private final Long itemId;
     private final Long bookerId;
     private final BookingStatus status;
-    private final String feedback;
 }

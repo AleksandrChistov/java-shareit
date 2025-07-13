@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.utils.ItemUtils;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dao.UserRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.utils.UserUtils;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto create(Long ownerId, ItemDto itemDto) {
-        userRepository.getById(ownerId)
+        User owner = userRepository.getById(ownerId)
                 .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(ownerId)));
 
         ItemRequest itemRequest = null;
@@ -62,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
                     .orElseThrow(() -> new NotFoundException("Запрос с id = " + itemDto.getRequestId() + " для вещи не найден"));
         }
 
-        Item item = ItemMapper.toItem(itemDto, ownerId, itemRequest);
+        Item item = ItemMapper.toItem(itemDto, owner, itemRequest);
 
         Item created = itemRepository.create(item);
 
@@ -74,7 +75,7 @@ public class ItemServiceImpl implements ItemService {
         Item oldItem = itemRepository.getById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemDto.getId() + " не найдена"));
 
-        if (!ownerId.equals(oldItem.getOwnerId())) {
+        if (!ownerId.equals(oldItem.getOwner().getId())) {
             throw new LackOfRightsException("Редактировать вещь может только её владелец");
         }
 

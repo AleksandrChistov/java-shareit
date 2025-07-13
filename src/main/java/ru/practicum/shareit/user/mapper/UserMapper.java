@@ -16,11 +16,10 @@ public class UserMapper {
     }
 
     public User toUser(UserDto userDto) {
-        return new User(
-                userDto.getId(),
-                userDto.getName(),
-                userDto.getEmail()
-        );
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        return user;
     }
 
 }
