@@ -28,22 +28,22 @@ public class BookingServiceImpl implements BookingService {
         UserDto bookerDto = userService.getById(bookingDto.getBookerId());
         User booker = UserMapper.toUser(bookerDto);
 
-        Item item = itemRepository.getById(bookingDto.getItemId())
+        Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + bookingDto.getItemId() + " не найдена"));
 
         Booking booking = BookingMapper.toBooking(bookingDto, item, booker);
 
-        Booking created = repository.create(booking);
+        Booking created = repository.save(booking);
 
         return BookingMapper.toBookingDto(created);
     }
 
     @Override
     public BookingDto update(UpdateBookingDto bookingDto) {
-        Booking oldBooking = repository.getById(bookingDto.getId())
+        Booking oldBooking = repository.findById(bookingDto.getId())
                 .orElseThrow(() -> new NotFoundException("Бронирование с id = " + bookingDto.getId() + " не найдено"));
 
-        Booking updated = repository.update(BookingUtils.updateBooking(oldBooking, bookingDto));
+        Booking updated = repository.save(BookingUtils.updateBooking(oldBooking, bookingDto));
 
         return BookingMapper.toBookingDto(updated);
     }

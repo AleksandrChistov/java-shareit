@@ -29,14 +29,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllByOwner(Long ownerId) {
-        return itemRepository.getAllByOwner(ownerId).stream()
+        return itemRepository.findAllByOwner_Id(ownerId).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemDto getById(Long itemId) {
-        return itemRepository.getById(itemId)
+        return itemRepository.findById(itemId)
                 .map(ItemMapper::toItemDto)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));
     }
@@ -47,39 +47,39 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
 
-        return itemRepository.searchAll(text).stream()
+        return itemRepository.searchAllByText(text).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemDto create(Long ownerId, ItemDto itemDto) {
-        User owner = userRepository.getById(ownerId)
+        User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(ownerId)));
 
         ItemRequest itemRequest = null;
         if (itemDto.getRequestId() != null) {
-            itemRequest = itemRequestRepository.getById(itemDto.getRequestId())
+            itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
                     .orElseThrow(() -> new NotFoundException("Запрос с id = " + itemDto.getRequestId() + " для вещи не найден"));
         }
 
         Item item = ItemMapper.toItem(itemDto, owner, itemRequest);
 
-        Item created = itemRepository.create(item);
+        Item created = itemRepository.save(item);
 
         return ItemMapper.toItemDto(created);
     }
 
     @Override
     public ItemDto update(Long ownerId, Long itemId, UpdateItemDto itemDto) {
-        Item oldItem = itemRepository.getById(itemId)
+        Item oldItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemDto.getId() + " не найдена"));
 
         if (!ownerId.equals(oldItem.getOwner().getId())) {
             throw new LackOfRightsException("Редактировать вещь может только её владелец");
         }
 
-        Item updated = itemRepository.update(ItemUtils.updateItem(oldItem, itemDto));
+        Item updated = itemRepository.save(ItemUtils.updateItem(oldItem, itemDto));
 
         return ItemMapper.toItemDto(updated);
     }

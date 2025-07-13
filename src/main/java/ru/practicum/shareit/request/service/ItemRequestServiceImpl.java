@@ -23,14 +23,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getAll() {
-        return repository.getAll().stream()
+        return repository.findAll().stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemRequestDto getById(long itemRequestId) {
-        return repository.getById(itemRequestId)
+        return repository.findById(itemRequestId)
                 .map(ItemRequestMapper::toItemRequestDto)
                 .orElseThrow(() -> new NotFoundException("Запрос с id = " + itemRequestId + " для вещи не найден"));
     }
@@ -42,7 +42,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, requestor);
 
-        ItemRequest created = repository.create(itemRequest);
+        ItemRequest created = repository.save(itemRequest);
 
         return ItemRequestMapper.toItemRequestDto(created);
     }

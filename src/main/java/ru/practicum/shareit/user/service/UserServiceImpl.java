@@ -11,8 +11,6 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.utils.UserUtils;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -20,42 +18,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(Long userId) {
-        return repository.getById(userId)
+        return repository.findById(userId)
                 .map(UserMapper::toUserDto)
                 .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(userId)));
     }
 
     @Override
     public void delete(Long userId) {
-        repository.delete(userId);
+        repository.deleteById(userId);
     }
 
     @Override
     public UserDto create(UserDto userDto) {
         checkDuplicatedEmail(userDto.getEmail());
 
-        User created = repository.create(UserMapper.toUser(userDto));
+        User created = repository.save(UserMapper.toUser(userDto));
 
         return UserMapper.toUserDto(created);
     }
 
     @Override
     public UserDto update(Long userId, UpdateUserDto userDto) {
-        User oldUser = repository.getById(userId)
+        User oldUser = repository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(userId)));
 
         checkDuplicatedEmail(userDto.getEmail());
 
-        User updated = repository.update(UserUtils.updateUser(oldUser, userDto));
+        User updated = repository.save(UserUtils.updateUser(oldUser, userDto));
 
         return UserMapper.toUserDto(updated);
     }
 
     private void checkDuplicatedEmail(String email) {
-        Optional<User> optionalFound = repository.getByEmail(email);
-
-        if (optionalFound.isPresent()) {
-            throw new DuplicateDataException("Пользователь с email = " + email + " уже существует");
-        }
+        repository.findByEmail(email)
+                .orElseThrow(() -> new DuplicateDataException("Пользователь с email = " + email + " уже существует"));
     }
 }
