@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.core.validation.ValidId;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import static ru.practicum.shareit.share.constant.HttpHeadersConstants.*;
-
 import java.util.List;
+
+import static ru.practicum.shareit.share.constant.HttpHeadersConstants.X_SHARER_USER_ID;
+import static ru.practicum.shareit.user.utils.UserUtils.INVALID_USER_ID_MESSAGE;
 
 @RestController
 @RequestMapping(value = "/items", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,13 +23,13 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDto> getAllByOwner(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+    public List<ItemDto> getAllByOwner(@RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId) {
         return itemService.getAllByOwner(userId);
     }
 
     @GetMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto getById(@PathVariable Long itemId) {
+    public ItemDto getById(@PathVariable @ValidId Long itemId) {
         return itemService.getById(itemId);
     }
 
@@ -39,15 +41,18 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto create(@RequestHeader(X_SHARER_USER_ID) Long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto create(
+            @RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId,
+            @Valid @RequestBody ItemDto itemDto
+    ) {
         return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto update(
-            @RequestHeader(X_SHARER_USER_ID) Long userId,
-            @PathVariable Long itemId,
+            @RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId,
+            @PathVariable @ValidId Long itemId,
             @Valid @RequestBody UpdateItemDto itemDto
     ) {
         return itemService.update(userId, itemId, itemDto);

@@ -1,10 +1,10 @@
 package ru.practicum.shareit.request;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.core.validation.ValidId;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -22,7 +22,7 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{itemRequestId}")
-    public ItemRequestDto getById(@Positive Long itemRequestId) {
+    public ItemRequestDto getById(@PathVariable @ValidId Long itemRequestId) {
         return itemRequestService.getById(itemRequestId);
     }
 

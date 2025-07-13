@@ -3,9 +3,11 @@ package ru.practicum.shareit.core.error;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import ru.practicum.shareit.core.error.exception.DuplicateDataException;
 import ru.practicum.shareit.core.error.exception.LackOfRightsException;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
@@ -25,6 +27,16 @@ public class GlobalExceptionHandler {
         }
 
         return getResponseEntity(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
+        ParameterValidationResult firstError = ex.getAllValidationResults().getFirst();
+        String errorMessage = !firstError.getResolvableErrors().isEmpty()
+                ? firstError.getResolvableErrors().getFirst().getDefaultMessage()
+                : "Ошибка валидации";
+
+        return getResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateDataException.class)
