@@ -7,10 +7,8 @@ import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository repository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public List<ItemRequestDto> getAll() {
@@ -37,8 +35,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto create(ItemRequestDto itemRequestDto) {
-        UserDto requestorDto = userService.getById(itemRequestDto.getRequestorId());
-        User requestor = UserMapper.toUser(requestorDto);
+        User requestor = userRepository.findById(itemRequestDto.getRequestorId())
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + itemRequestDto.getRequestorId() + " не найде"));
 
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, requestor);
 

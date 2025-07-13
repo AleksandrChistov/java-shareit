@@ -11,22 +11,20 @@ import ru.practicum.shareit.booking.utils.BookingUtils;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
     private final ItemRepository itemRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public BookingDto create(BookingDto bookingDto) {
-        UserDto bookerDto = userService.getById(bookingDto.getBookerId());
-        User booker = UserMapper.toUser(bookerDto);
+        User booker = userRepository.findById(bookingDto.getBookerId())
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + bookingDto.getBookerId() + " не найден"));
 
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + bookingDto.getItemId() + " не найдена"));
