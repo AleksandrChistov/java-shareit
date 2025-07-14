@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -34,7 +35,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto create(ItemRequestDto itemRequestDto) {
+    public ItemRequestDto create(CreateItemRequestDto itemRequestDto) {
         User requestor = userRepository.findById(itemRequestDto.getRequestorId())
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + itemRequestDto.getRequestorId() + " не найде"));
 

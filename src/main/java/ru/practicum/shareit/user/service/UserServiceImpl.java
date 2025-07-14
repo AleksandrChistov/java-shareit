@@ -51,6 +51,8 @@ public class UserServiceImpl implements UserService {
 
     private void checkDuplicatedEmail(String email) {
         repository.findByEmail(email)
-                .orElseThrow(() -> new DuplicateDataException("Пользователь с email = " + email + " уже существует"));
+                .ifPresent(u -> {
+                    throw new DuplicateDataException("Пользователь с email = " + email + " уже существует");
+                });
     }
 }

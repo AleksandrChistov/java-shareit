@@ -4,7 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.core.validation.ValidId;
+import ru.practicum.shareit.core.validation.validid.ValidId;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -27,7 +28,7 @@ public class ItemRequestController {
     }
 
     @PostMapping
-    public ItemRequestDto create(@Valid @RequestBody ItemRequestDto itemRequestDto) {
+    public ItemRequestDto create(@Valid @RequestBody CreateItemRequestDto itemRequestDto) {
         return itemRequestService.create(itemRequestDto);
     }
 

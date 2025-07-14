@@ -9,7 +9,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "items")
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class Item {
     private User owner;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id", nullable = false)
+    @JoinColumn(name = "request_id")
     @ToString.Exclude
     private ItemRequest request;
 
