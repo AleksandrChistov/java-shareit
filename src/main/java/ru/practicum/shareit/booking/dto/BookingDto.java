@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.shareit.booking.enums.BookingStatus;
-import ru.practicum.shareit.core.validation.ValidId;
+import ru.practicum.shareit.core.validation.validdates.ValidDates;
+import ru.practicum.shareit.core.validation.validid.ValidId;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@ValidDates
 public class BookingDto {
     private Long id;
     @NotNull
@@ -23,5 +25,5 @@ public class BookingDto {
     private final Long itemId;
     @ValidId
     private final Long bookerId;
-    private final BookingStatus status;
+    private BookingStatus status;
 }

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.core.validation;
+package ru.practicum.shareit.core.validation.validid;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

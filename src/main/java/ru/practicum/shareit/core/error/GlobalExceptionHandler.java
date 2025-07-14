@@ -2,7 +2,7 @@ package ru.practicum.shareit.core.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,11 +17,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleInvalidInput(MethodArgumentNotValidException ex) {
-        FieldError fieldError = ex.getBindingResult().getFieldError();
+        ObjectError error = ex.getBindingResult().getAllErrors().getFirst();
 
         String message;
-        if (fieldError != null) {
-            message = fieldError.getDefaultMessage();
+        if (error != null) {
+            message = error.getDefaultMessage();
         } else {
             message = ex.getMessage();
         }
