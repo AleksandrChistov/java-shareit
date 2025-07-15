@@ -1,13 +1,14 @@
 package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithDatesDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 
 import java.util.List;
 
 public interface ItemService {
 
-    List<ItemDto> getAllByOwner(Long ownerId);
+    List<ItemWithDatesDto> getAllByOwner(Long ownerId);
 
     ItemDto getById(Long itemId);
 

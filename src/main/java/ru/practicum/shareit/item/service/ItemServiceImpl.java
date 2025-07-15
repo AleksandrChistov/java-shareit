@@ -2,10 +2,13 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dao.BookingRepository;
+import ru.practicum.shareit.booking.view.BookingDatesView;
 import ru.practicum.shareit.core.error.exception.LackOfRightsException;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithDatesDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -16,8 +19,11 @@ import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.utils.UserUtils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,12 +32,23 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final ItemRequestRepository itemRequestRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
-    public List<ItemDto> getAllByOwner(Long ownerId) {
-        return itemRepository.findAllByOwner_Id(ownerId).stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+    public List<ItemWithDatesDto> getAllByOwner(Long ownerId) {
+        List<BookingDatesView> bookingDatesViews = bookingRepository.findLastAndNextBookingDatesByOwnerId(ownerId);
+
+        Map<Long, BookingDatesView> bookingDateMap = bookingDatesViews.stream()
+                .collect(Collectors.toMap(BookingDatesView::getItemId, Function.identity()));
+
+        return itemRepository.findAllByOwner_Id(ownerId).stream().map(item -> {
+            BookingDatesView bookingDates = bookingDateMap.get(item.getId());
+
+            Instant lastBookingDate = (bookingDates != null) ? bookingDates.getLastBookingDate() : null;
+            Instant nextBookingDate = (bookingDates != null) ? bookingDates.getNextBookingDate() : null;
+
+            return ItemMapper.toItemWithDatesDto(item, lastBookingDate, nextBookingDate);
+        }).collect(Collectors.toList());
     }
 
     @Override

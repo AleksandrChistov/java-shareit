@@ -3,9 +3,12 @@ package ru.practicum.shareit.item.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithDatesDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
+
+import java.time.Instant;
 
 @UtilityClass
 public class ItemMapper {
@@ -16,6 +19,18 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
+                item.getRequest() != null ? item.getRequest().getId() : null
+        );
+    }
+
+    public ItemWithDatesDto toItemWithDatesDto(Item item, Instant lastBookingDate, Instant nextBookingDate) {
+        return new ItemWithDatesDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                lastBookingDate,
+                nextBookingDate,
                 item.getRequest() != null ? item.getRequest().getId() : null
         );
     }
