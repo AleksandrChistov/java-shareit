@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidDates {
 
-    String message() default "Дата бронирования не может быть в прошлом или раньше даты окончания";
+    String message() default "Дата начала бронирования не может быть в прошлом или раньше даты окончания";
 
     Class<?>[] groups() default {};
 

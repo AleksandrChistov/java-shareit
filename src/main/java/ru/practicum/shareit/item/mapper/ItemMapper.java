@@ -2,13 +2,16 @@
 package ru.practicum.shareit.item.mapper;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithDatesDto;
+import ru.practicum.shareit.item.dto.FullItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.util.List;
 
 @UtilityClass
 public class ItemMapper {
@@ -23,15 +26,18 @@ public class ItemMapper {
         );
     }
 
-    public ItemWithDatesDto toItemWithDatesDto(Item item, Instant lastBookingDate, Instant nextBookingDate) {
-        return new ItemWithDatesDto(
+    public FullItemDto toFullItemDto(Item item, Instant lastBookingDate, Instant nextBookingDate, List<Comment> comments) {
+        List<CommentDto> commentDtos = comments.stream().map(CommentMapper::toCommentDto).toList();
+
+        return new FullItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
                 lastBookingDate,
                 nextBookingDate,
-                item.getRequest() != null ? item.getRequest().getId() : null
+                item.getRequest() != null ? item.getRequest().getId() : null,
+                commentDtos
         );
     }
 

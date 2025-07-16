@@ -6,10 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ItemWithDatesDto {
+public class FullItemDto {
     private Long id;
     @NotBlank(message = "Имя - обязательное поле для заполнения")
     private final String name;
@@ -20,4 +21,5 @@ public class ItemWithDatesDto {
     private final Instant lastBookingDate;
     private final Instant nextBookingDate;
     private final Long requestId;
+    private final List<CommentDto> comments;
 }

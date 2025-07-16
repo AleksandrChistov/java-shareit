@@ -15,7 +15,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -71,9 +71,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllByBooker(Long userId, BookingStatusView state) {
         List<Booking> bookings = switch (state) {
             case CURRENT -> repository.findAllByBooker_IdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(
-                    userId, LocalDateTime.now(), LocalDateTime.now());
-            case PAST -> repository.findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
-            case FUTURE -> repository.findAllByBooker_IdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
+                    userId, Instant.now(), Instant.now());
+            case PAST -> repository.findAllByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, Instant.now());
+            case FUTURE -> repository.findAllByBooker_IdAndStartIsAfterOrderByStartDesc(userId, Instant.now());
             case WAITING -> repository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
             case REJECTED -> repository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
             case ALL -> repository.findAllByBooker_IdOrderByStartDesc(userId);
@@ -85,10 +85,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllByOwner(Long userId, BookingStatusView state) {
         List<Booking> bookings = switch (state) {
             case CURRENT -> repository.findAllByItem_Owner_IdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(
-                    userId, LocalDateTime.now(), LocalDateTime.now());
-            case PAST -> repository.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
-            case FUTURE ->
-                    repository.findAllByItem_Owner_IdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
+                    userId, Instant.now(), Instant.now());
+            case PAST -> repository.findAllByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(userId, Instant.now());
+            case FUTURE -> repository.findAllByItem_Owner_IdAndStartIsAfterOrderByStartDesc(userId, Instant.now());
             case WAITING -> repository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
             case REJECTED -> repository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
             case ALL -> repository.findAllByItem_Owner_IdOrderByStartDesc(userId);

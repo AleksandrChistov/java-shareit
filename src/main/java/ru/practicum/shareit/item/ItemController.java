@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.core.validation.validid.ValidId;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithDatesDto;
-import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemWithDatesDto> getAllByOwner(
+    public List<FullItemDto> getAllByOwner(
             @RequestHeader(value = X_SHARER_USER_ID, required = false)
             @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId
     ) {
@@ -33,7 +31,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto getById(@PathVariable @ValidId Long itemId) {
+    public FullItemDto getById(@PathVariable @ValidId Long itemId) {
         return itemService.getById(itemId);
     }
 
@@ -60,6 +58,16 @@ public class ItemController {
             @Valid @RequestBody UpdateItemDto itemDto
     ) {
         return itemService.update(userId, itemId, itemDto);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto createComment(
+            @RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId,
+            @PathVariable @ValidId Long itemId,
+            @Valid @RequestBody CreateCommentDto commentDto
+    ) {
+        return itemService.addComment(userId, itemId, commentDto);
     }
 
 }
