@@ -5,7 +5,7 @@ import java.time.Instant;
 public interface BookingDatesView {
     Long getItemId();
 
-    Instant getLastBookingDate();
+    Instant getLastBooking();
 
-    Instant getNextBookingDate();
+    Instant getNextBooking();
 }

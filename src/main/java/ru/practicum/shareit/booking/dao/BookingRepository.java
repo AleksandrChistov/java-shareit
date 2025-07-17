@@ -32,8 +32,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByItem_Owner_IdAndStatusOrderByStartDesc(Long ownerId, BookingStatus status);
 
     @Query(value = "SELECT b.item_id as itemId, " +
-            "       MAX(CASE WHEN b.end_date < CURRENT_TIMESTAMP THEN b.end_date ELSE null END) as lastBookingDate, " +
-            "       MIN(CASE WHEN b.start_date > CURRENT_TIMESTAMP THEN b.start_date ELSE null END) as nextBookingDate " +
+            "       MAX(CASE WHEN b.end_date < CURRENT_TIMESTAMP THEN b.end_date ELSE null END) as lastBooking, " +
+            "       MIN(CASE WHEN b.start_date > CURRENT_TIMESTAMP THEN b.start_date ELSE null END) as nextBooking " +
             "FROM bookings as b " +
             "LEFT JOIN items as i ON i.id = b.item_id " +
             "WHERE i.owner_id = :ownerId " +

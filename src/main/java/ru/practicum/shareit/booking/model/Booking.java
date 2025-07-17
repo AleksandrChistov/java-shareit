@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.share.util.DateTimeUtils;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookings")
@@ -19,7 +21,7 @@ public class Booking {
     private Long id;
 
     @Column(name = "start_date", nullable = false)
-    private Instant start = Instant.now();
+    private Instant start = DateTimeUtils.toUTC(LocalDateTime.now());
 
     @Column(name = "end_date", nullable = false)
     private Instant end;

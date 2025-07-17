@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.booking.enums.BookingStatusView;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.core.validation.validid.ValidId;
@@ -23,18 +24,21 @@ public class BookingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingDto create(@Valid @RequestBody BookingDto bookingDto) {
-        return bookingService.create(bookingDto);
+    public BookingDto create(
+            @RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId,
+            @Valid @RequestBody CreateBookingDto bookingDto
+    ) {
+        return bookingService.create(bookingDto, userId);
     }
 
     @PatchMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public void approve(
+    public BookingDto approve(
             @RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId,
             @PathVariable @ValidId Long bookingId,
             @RequestParam(required = false) Boolean approved
     ) {
-        bookingService.approve(userId, bookingId, approved);
+        return bookingService.approve(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")

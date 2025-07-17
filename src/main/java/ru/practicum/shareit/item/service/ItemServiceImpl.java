@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.view.BookingDatesView;
 import ru.practicum.shareit.core.error.exception.LackOfRightsException;
+import ru.practicum.shareit.core.error.exception.NotAvailableException;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -17,11 +18,13 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.utils.ItemUtils;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.share.util.DateTimeUtils;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.utils.UserUtils;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,8 +55,8 @@ public class ItemServiceImpl implements ItemService {
             BookingDatesView bookingDatesView = bookingDateMap.get(item.getId());
             List<Comment> itemComments = commentsMap.getOrDefault(item.getId(), Collections.emptyList());
 
-            Instant lastBookingDate = (bookingDatesView != null) ? bookingDatesView.getLastBookingDate() : null;
-            Instant nextBookingDate = (bookingDatesView != null) ? bookingDatesView.getNextBookingDate() : null;
+            Instant lastBookingDate = (bookingDatesView != null) ? bookingDatesView.getLastBooking() : null;
+            Instant nextBookingDate = (bookingDatesView != null) ? bookingDatesView.getNextBooking() : null;
 
             return ItemMapper.toFullItemDto(item, lastBookingDate, nextBookingDate, itemComments);
         }).collect(Collectors.toList());
@@ -117,10 +120,13 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));
 
-        Booking booking = bookingRepository.findAllByItem_IdAndBooker_IdAndEndIsBefore(itemId, userId, Instant.now())
+        Instant nowUtc = DateTimeUtils.toUTC(LocalDateTime.now());
+
+        Booking booking = bookingRepository
+                .findAllByItem_IdAndBooker_IdAndEndIsBefore(itemId, userId, nowUtc)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new LackOfRightsException("Отзыв может оставить только пользователь, " +
+                .orElseThrow(() -> new NotAvailableException("Отзыв может оставить только пользователь, " +
                         "который брал эту вещь в аренду, и только после окончания срока аренды"));
 
         Comment saved = commentRepository.save(CommentMapper.toComment(commentDto, item, booking.getBooker()));

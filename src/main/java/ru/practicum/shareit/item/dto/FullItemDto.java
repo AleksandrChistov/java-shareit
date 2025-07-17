@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,8 +18,8 @@ public class FullItemDto {
     private final String description;
     @NotNull(message = "Статус - обязательное поле для заполнения")
     private final Boolean available;
-    private final Instant lastBookingDate;
-    private final Instant nextBookingDate;
+    private final LocalDateTime lastBooking;
+    private final LocalDateTime nextBooking;
     private final Long requestId;
     private final List<CommentDto> comments;
 }

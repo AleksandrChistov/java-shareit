@@ -21,7 +21,7 @@ public class DatesValidator implements ConstraintValidator<ValidDates, Object> {
                 return false;
             }
 
-            if (start.isBefore(LocalDateTime.now())) {
+            if (start.isBefore(LocalDateTime.now()) || start.isEqual(end)) {
                 return false;
             }
 

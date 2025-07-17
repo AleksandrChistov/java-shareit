@@ -4,14 +4,18 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.share.util.DateTimeUtils;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "requests")
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +30,7 @@ public class ItemRequest {
     private User requestor;
 
     @Column(nullable = false)
-    private final Instant created = Instant.now();
+    private final Instant created = DateTimeUtils.toUTC(LocalDateTime.now());
 
     @Override
     public boolean equals(Object o) {

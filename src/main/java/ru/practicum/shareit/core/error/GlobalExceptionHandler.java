@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import ru.practicum.shareit.core.error.exception.DuplicateDataException;
 import ru.practicum.shareit.core.error.exception.LackOfRightsException;
+import ru.practicum.shareit.core.error.exception.NotAvailableException;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 
 @ControllerAdvice
@@ -37,6 +38,11 @@ public class GlobalExceptionHandler {
                 : "Ошибка валидации";
 
         return getResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateData(NotAvailableException ex) {
+        return getResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateDataException.class)

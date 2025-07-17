@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.dto.FullItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.share.util.DateTimeUtils;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
@@ -34,8 +35,8 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                lastBookingDate,
-                nextBookingDate,
+                lastBookingDate == null ? null : DateTimeUtils.toLocalDateTime(lastBookingDate),
+                nextBookingDate == null ? null : DateTimeUtils.toLocalDateTime(nextBookingDate),
                 item.getRequest() != null ? item.getRequest().getId() : null,
                 commentDtos
         );

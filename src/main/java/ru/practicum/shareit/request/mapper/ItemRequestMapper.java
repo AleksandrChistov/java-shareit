@@ -5,10 +5,8 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.share.util.DateTimeUtils;
 import ru.practicum.shareit.user.model.User;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @UtilityClass
 public class ItemRequestMapper {
@@ -18,7 +16,7 @@ public class ItemRequestMapper {
                 itemRequest.getId(),
                 itemRequest.getDescription(),
                 itemRequest.getRequestor() != null ? itemRequest.getRequestor().getId() : null,
-                LocalDateTime.ofInstant(itemRequest.getCreated(), ZoneOffset.UTC)
+                DateTimeUtils.toLocalDateTime(itemRequest.getCreated())
         );
     }
 
