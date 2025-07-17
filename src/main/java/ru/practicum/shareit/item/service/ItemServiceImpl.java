@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.view.BookingDatesView;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -84,6 +86,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto create(Long ownerId, ItemDto itemDto) {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(ownerId)));
@@ -102,6 +105,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto update(Long ownerId, Long itemId, UpdateItemDto itemDto) {
         Item oldItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemDto.getId() + " не найдена"));
@@ -116,6 +120,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto addComment(Long userId, Long itemId, CreateCommentDto commentDto) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id = " + itemId + " не найдена"));

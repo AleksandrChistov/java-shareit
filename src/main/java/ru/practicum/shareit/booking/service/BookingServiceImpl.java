@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreateBookingDto;
@@ -24,12 +25,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public BookingDto create(CreateBookingDto bookingDto, Long bookerId) {
         User booker = userRepository.findById(bookerId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + bookerId + " не найден"));
@@ -49,6 +52,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto approve(Long userId, Long bookingId, Boolean approved) {
         Booking booking = findByIdOrThrow(bookingId);
         if (!booking.getItem().getOwner().getId().equals(userId)) {
