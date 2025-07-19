@@ -29,5 +29,6 @@ public class Comment {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    private Instant created;
+    @Column(name = "created")
+    private Instant createdOn;
 }

@@ -19,7 +19,7 @@ public class CommentMapper {
                 comment.getId(),
                 comment.getText(),
                 comment.getAuthor().getName(),
-                comment.getCreated()
+                comment.getCreatedOn()
         );
     }
 
@@ -28,7 +28,7 @@ public class CommentMapper {
         comment.setText(createCommentDto.getText());
         comment.setItem(item);
         comment.setAuthor(booker);
-        comment.setCreated(DateTimeUtils.toUTC(LocalDateTime.now()));
+        comment.setCreatedOn(DateTimeUtils.toUTC(LocalDateTime.now()));
         return comment;
     }
 
