@@ -54,18 +54,23 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public List<BookingDto> getAllByBooker(
             @RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId,
-            @RequestParam(name = "state", defaultValue = "ALL") BookingStatusView state
+            @RequestParam(name = "state", defaultValue = "ALL") String state
     ) {
-        return bookingService.getAllByBooker(userId, state);
+        return bookingService.getAllByBooker(userId, getBookingStatusView(state));
     }
 
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public List<BookingDto> getAllByOwner(
             @RequestHeader(value = X_SHARER_USER_ID, required = false) @ValidId(message = INVALID_USER_ID_MESSAGE) Long userId,
-            @RequestParam(name = "state", defaultValue = "ALL") BookingStatusView state
+            @RequestParam(name = "state", defaultValue = "ALL") String state
     ) {
-        return bookingService.getAllByOwner(userId, state);
+        return bookingService.getAllByOwner(userId, getBookingStatusView(state));
+    }
+
+    private BookingStatusView getBookingStatusView(String state) {
+        BookingStatusView stateView = BookingStatusView.fromString(state);
+        return stateView == null ? BookingStatusView.ALL : stateView;
     }
 
 }
