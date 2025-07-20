@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.shareit.booking.enums.BookingStatus;
-import ru.practicum.shareit.core.validation.validdates.ValidDates;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -13,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-@ValidDates
 public class BookingDto {
     private Long id;
     @NotNull

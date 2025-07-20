@@ -2,20 +2,17 @@ package ru.practicum.shareit.core.validation.validdates;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import ru.practicum.shareit.booking.dto.CreateBookingDto;
+import ru.practicum.shareit.core.error.exception.NotValidException;
 
 import java.time.LocalDateTime;
 
 public class DatesValidator implements ConstraintValidator<ValidDates, Object> {
-
     @Override
     public boolean isValid(Object object, ConstraintValidatorContext context) {
-        if (object == null) {
-            return false;
-        }
-
-        try {
-            LocalDateTime start = (LocalDateTime) object.getClass().getMethod("getStart").invoke(object);
-            LocalDateTime end = (LocalDateTime) object.getClass().getMethod("getEnd").invoke(object);
+        if (object instanceof CreateBookingDto bookingDto) {
+            LocalDateTime start = bookingDto.getStart();
+            LocalDateTime end = bookingDto.getEnd();
 
             if (start == null || end == null) {
                 return false;
@@ -26,8 +23,8 @@ public class DatesValidator implements ConstraintValidator<ValidDates, Object> {
             }
 
             return !start.isAfter(end);
-        } catch (Exception e) {
-            throw new RuntimeException("У объектов нет методов getStart и getEnd");
+        } else {
+            throw new NotValidException("Объект не соответствует CreateBookingDto");
         }
     }
 }
