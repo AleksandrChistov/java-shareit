@@ -6,7 +6,6 @@ import ru.practicum.shareit.user.model.User;
 
 @UtilityClass
 public class UserUtils {
-    public static final String INVALID_USER_ID_MESSAGE = "ID пользователя не указан в заголовке или равен < 1";
 
     public User updateUser(User oldUser, UpdateUserDto newUserDto) {
         if (newUserDto.getName() != null && !newUserDto.getName().isBlank()) {
@@ -20,7 +19,4 @@ public class UserUtils {
         return oldUser;
     }
 
-    public String getUserNotFountMessage(Long userId) {
-        return String.format("Пользователь с id = %d не найден", userId);
-    }
 }

@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.utils.UserMessageUtils;
 import ru.practicum.shareit.user.utils.UserUtils;
 
 @Service
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getById(Long userId) {
         return repository.findById(userId)
                 .map(UserMapper::toUserDto)
-                .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(userId)));
+                .orElseThrow(() -> new NotFoundException(UserMessageUtils.getUserNotFountMessage(userId)));
     }
 
     @Override
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto update(Long userId, UpdateUserDto userDto) {
         User oldUser = repository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(userId)));
+                .orElseThrow(() -> new NotFoundException(UserMessageUtils.getUserNotFountMessage(userId)));
 
         checkDuplicatedEmail(userDto.getEmail());
 

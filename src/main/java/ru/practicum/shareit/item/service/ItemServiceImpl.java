@@ -22,7 +22,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.share.util.DateTimeUtils;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.utils.UserUtils;
+import ru.practicum.shareit.user.utils.UserMessageUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -89,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto create(Long ownerId, ItemDto itemDto) {
         User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new NotFoundException(UserUtils.getUserNotFountMessage(ownerId)));
+                .orElseThrow(() -> new NotFoundException(UserMessageUtils.getUserNotFountMessage(ownerId)));
 
         ItemRequest itemRequest = null;
         if (itemDto.getRequestId() != null) {
