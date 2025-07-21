@@ -1,33 +1,45 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.*;
+import lombok.*;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.share.util.DateTimeUtils;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "bookings")
+@Getter
+@Setter
+@ToString
 public class Booking {
-    @EqualsAndHashCode.Include
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime start;
-    private LocalDateTime end;
-    private Item item;
-    private User booker;
-    private BookingStatus status;
-    private String feedback;
 
-    public Booking(LocalDateTime start, LocalDateTime end, Item item, User booker, BookingStatus status, String feedback) {
-        this.start = start;
-        this.end = end;
-        this.item = item;
-        this.booker = booker;
-        this.status = status;
-        this.feedback = feedback;
+    @Column(name = "start_date", nullable = false)
+    private Instant start = DateTimeUtils.toUTC(LocalDateTime.now());
+
+    @Column(name = "end_date", nullable = false)
+    private Instant end;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    @ToString.Exclude
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booker_id", nullable = false)
+    @ToString.Exclude
+    private User booker;
+
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
+
+    public void setStatus(BookingStatus status) {
+        this.status = status != null ? status : BookingStatus.WAITING;
     }
 }

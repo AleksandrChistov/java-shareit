@@ -1,6 +1,8 @@
 package ru.practicum.shareit.user;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+
+import static ru.practicum.shareit.user.utils.UserMessageUtils.NOT_NULL_USER_ID_MESSAGE;
+import static ru.practicum.shareit.user.utils.UserMessageUtils.POSITIVE_USER_ID_MESSAGE;
 
 @RestController
 @RequestMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -17,13 +22,19 @@ public class UserController {
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getById(@PathVariable Long userId) {
+    public UserDto getById(
+            @PathVariable @NotNull(message = NOT_NULL_USER_ID_MESSAGE)
+            @Positive(message = POSITIVE_USER_ID_MESSAGE) Long userId
+    ) {
         return userService.getById(userId);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Long userId) {
+    public void delete(
+            @PathVariable @NotNull(message = NOT_NULL_USER_ID_MESSAGE)
+            @Positive(message = POSITIVE_USER_ID_MESSAGE) Long userId
+    ) {
         userService.delete(userId);
     }
 
@@ -35,7 +46,11 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto update(@PathVariable Long userId, @Valid @RequestBody UpdateUserDto userDto) {
+    public UserDto update(
+            @PathVariable @NotNull(message = NOT_NULL_USER_ID_MESSAGE)
+            @Positive(message = POSITIVE_USER_ID_MESSAGE) Long userId,
+            @Valid @RequestBody UpdateUserDto userDto
+    ) {
         return userService.update(userId, userDto);
     }
 

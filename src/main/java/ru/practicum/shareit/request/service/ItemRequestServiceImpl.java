@@ -2,47 +2,49 @@ package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository repository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public List<ItemRequestDto> getAll() {
-        return repository.getAll().stream()
+        return repository.findAll().stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemRequestDto getById(long itemRequestId) {
-        return repository.getById(itemRequestId)
+        return repository.findById(itemRequestId)
                 .map(ItemRequestMapper::toItemRequestDto)
                 .orElseThrow(() -> new NotFoundException("Запрос с id = " + itemRequestId + " для вещи не найден"));
     }
 
     @Override
-    public ItemRequestDto create(ItemRequestDto itemRequestDto) {
-        UserDto requestorDto = userService.getById(itemRequestDto.getRequestorId());
-        User requestor = UserMapper.toUser(requestorDto);
+    @Transactional
+    public ItemRequestDto create(CreateItemRequestDto itemRequestDto) {
+        User requestor = userRepository.findById(itemRequestDto.getRequestorId())
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + itemRequestDto.getRequestorId() + " не найде"));
 
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, requestor);
 
-        ItemRequest created = repository.create(itemRequest);
+        ItemRequest created = repository.save(itemRequest);
 
         return ItemRequestMapper.toItemRequestDto(created);
     }

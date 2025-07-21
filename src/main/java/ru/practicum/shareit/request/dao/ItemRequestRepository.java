@@ -1,16 +1,7 @@
 package ru.practicum.shareit.request.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface ItemRequestRepository {
-
-    List<ItemRequest> getAll();
-
-    Optional<ItemRequest> getById(long itemRequestId);
-
-    ItemRequest create(ItemRequest itemRequest);
-
+public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
 }

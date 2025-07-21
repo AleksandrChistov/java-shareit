@@ -1,11 +1,12 @@
 package ru.practicum.shareit.booking.dto;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.shareit.booking.enums.BookingStatus;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
@@ -19,12 +20,7 @@ public class BookingDto {
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private final LocalDateTime end;
-    @NotNull
-    @Positive
-    private final Long itemId;
-    @NotNull
-    @Positive
-    private final Long bookerId;
-    private final BookingStatus status;
-    private final String feedback;
+    private BookingStatus status;
+    private final UserDto booker;
+    private final ItemDto item;
 }

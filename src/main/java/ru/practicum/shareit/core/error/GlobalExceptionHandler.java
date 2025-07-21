@@ -2,12 +2,15 @@ package ru.practicum.shareit.core.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import ru.practicum.shareit.core.error.exception.DuplicateDataException;
 import ru.practicum.shareit.core.error.exception.LackOfRightsException;
+import ru.practicum.shareit.core.error.exception.NotAvailableException;
 import ru.practicum.shareit.core.error.exception.NotFoundException;
 
 @ControllerAdvice
@@ -15,16 +18,31 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleInvalidInput(MethodArgumentNotValidException ex) {
-        FieldError fieldError = ex.getBindingResult().getFieldError();
+        ObjectError error = ex.getBindingResult().getAllErrors().getFirst();
 
         String message;
-        if (fieldError != null) {
-            message = fieldError.getDefaultMessage();
+        if (error != null) {
+            message = error.getDefaultMessage();
         } else {
             message = ex.getMessage();
         }
 
         return getResponseEntity(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
+        ParameterValidationResult firstError = ex.getAllValidationResults().getFirst();
+        String errorMessage = !firstError.getResolvableErrors().isEmpty()
+                ? firstError.getResolvableErrors().getFirst().getDefaultMessage()
+                : "Ошибка валидации";
+
+        return getResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateData(NotAvailableException ex) {
+        return getResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateDataException.class)
