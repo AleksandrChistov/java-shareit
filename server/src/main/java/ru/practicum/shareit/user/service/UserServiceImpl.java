@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
-        checkDuplicatedEmail(userDto.getEmail());
+        checkDuplicatedEmail(userDto.getEmail(), null);
 
         User created = repository.save(UserMapper.toUser(userDto));
 
@@ -48,15 +48,16 @@ public class UserServiceImpl implements UserService {
         User oldUser = repository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(UserMessageUtils.getUserNotFountMessage(userId)));
 
-        checkDuplicatedEmail(userDto.getEmail());
+        checkDuplicatedEmail(userDto.getEmail(), oldUser.getId());
 
         User updated = repository.save(UserUtils.updateUser(oldUser, userDto));
 
         return UserMapper.toUserDto(updated);
     }
 
-    private void checkDuplicatedEmail(String email) {
+    private void checkDuplicatedEmail(String email, Long userId) {
         repository.findByEmail(email)
+                .filter(u -> !u.getId().equals(userId))
                 .ifPresent(u -> {
                     throw new DuplicateDataException("Пользователь с email = " + email + " уже существует");
                 });
