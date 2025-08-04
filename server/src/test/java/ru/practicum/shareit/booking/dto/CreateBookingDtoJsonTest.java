@@ -32,13 +32,11 @@ class CreateBookingDtoJsonTest {
 
     @Test
     void testDeserialize() throws Exception {
-        String jsonContent = """
-                {
-                    "itemId": 1,
-                    "start": "2023-10-01T10:00:00",
-                    "end": "2023-10-01T12:00:00"
-                }
-                """;
+        String jsonContent = "{"
+                + "  \"itemId\": 1,"
+                + "  \"start\": \"2023-10-01T10:00:00\","
+                + "  \"end\": \"2023-10-01T12:00:00\""
+                + "}";
 
         LocalDateTime start = LocalDateTime.parse("2023-10-01T10:00:00");
         LocalDateTime end = LocalDateTime.parse("2023-10-01T12:00:00");

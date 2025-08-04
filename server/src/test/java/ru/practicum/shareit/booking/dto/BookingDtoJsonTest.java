@@ -46,26 +46,24 @@ class BookingDtoJsonTest {
 
     @Test
     void testDeserialize() throws Exception {
-        String jsonContent = """
-                {
-                    "id": 1,
-                    "start": "2023-10-01T10:00:00",
-                    "end": "2023-10-01T12:00:00",
-                    "status": "WAITING",
-                    "booker": {
-                        "id": 1,
-                        "name": "Booker Name",
-                        "email": "booker@example.com"
-                    },
-                    "item": {
-                        "id": 1,
-                        "name": "Item Name",
-                        "description": "Item Description",
-                        "available": true,
-                        "requestId": null
-                    }
-                }
-                """;
+        String jsonContent = "{"
+                + "  \"id\": 1,"
+                + "  \"start\": \"2023-10-01T10:00:00\","
+                + "  \"end\": \"2023-10-01T12:00:00\","
+                + "  \"status\": \"WAITING\","
+                + "  \"booker\": {"
+                + "    \"id\": 1,"
+                + "    \"name\": \"Booker Name\","
+                + "    \"email\": \"booker@example.com\""
+                + "  },"
+                + "  \"item\": {"
+                + "    \"id\": 1,"
+                + "    \"name\": \"Item Name\","
+                + "    \"description\": \"Item Description\","
+                + "    \"available\": true,"
+                + "    \"requestId\": null"
+                + "  }"
+                + "}";
 
         UserDto bookerDto = new UserDto(1L, "Booker Name", "booker@example.com");
         ItemDto itemDto = new ItemDto(null, "Item Name", "Item Description", true, null);

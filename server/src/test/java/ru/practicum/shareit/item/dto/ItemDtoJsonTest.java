@@ -42,15 +42,13 @@ class ItemDtoJsonTest {
 
     @Test
     void testDeserialize() throws Exception {
-        String jsonContent = """
-                {
-                    "id": 1,
-                    "name": "Дрель",
-                    "description": "Простая дрель",
-                    "available": true,
-                    "requestId": 1
-                }
-                """;
+        String jsonContent = "{"
+                + "  \"id\": 1,"
+                + "  \"name\": \"Дрель\","
+                + "  \"description\": \"Простая дрель\","
+                + "  \"available\": true,"
+                + "  \"requestId\": 1"
+                + "}";
 
         var parsedResult = json.parse(jsonContent);
 
@@ -66,15 +64,13 @@ class ItemDtoJsonTest {
 
     @Test
     void testDeserializeWithNullValues() throws Exception {
-        String jsonContent = """
-                {
-                    "id": null,
-                    "name": "Дрель",
-                    "description": "Простая дрель",
-                    "available": true,
-                    "requestId": null
-                }
-                """;
+        String jsonContent = "{"
+                + "  \"id\": null,"
+                + "  \"name\": \"Дрель\","
+                + "  \"description\": \"Простая дрель\","
+                + "  \"available\": true,"
+                + "  \"requestId\": null"
+                + "}";
 
         var parsedResult = json.parse(jsonContent);
 
@@ -90,13 +86,11 @@ class ItemDtoJsonTest {
 
     @Test
     void testDeserializeWithoutOptionalFields() throws Exception {
-        String jsonContent = """
-                {
-                    "name": "Дрель",
-                    "description": "Простая дрель",
-                    "available": true
-                }
-                """;
+        String jsonContent = "{"
+                + "  \"name\": \"Дрель\","
+                + "  \"description\": \"Простая дрель\","
+                + "  \"available\": true"
+                + "}";
 
         var parsedResult = json.parse(jsonContent);
 
