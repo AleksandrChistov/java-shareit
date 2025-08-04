@@ -33,7 +33,7 @@ class ItemRequestMapperTest {
         itemRequest.setRequestor(requestor);
 
         try (MockedStatic<DateTimeUtils> mockedDateTimeUtils = mockStatic(DateTimeUtils.class)) {
-            mockedDateTimeUtils.when(() -> DateTimeUtils.toLocalDateTime(instant)).thenReturn(now);
+            mockedDateTimeUtils.when(() -> DateTimeUtils.toLocalDateTime(itemRequest.getCreated())).thenReturn(now);
 
             ItemRequestDto result = ItemRequestMapper.toItemRequestDto(itemRequest);
 
@@ -48,7 +48,6 @@ class ItemRequestMapperTest {
     @Test
     void toItemRequestDto_shouldConvertItemRequestWithNullRequestorToItemRequestDto() {
         LocalDateTime now = LocalDateTime.now();
-        Instant instant = now.atZone(java.time.ZoneId.systemDefault()).toInstant();
 
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setId(1L);
@@ -56,7 +55,7 @@ class ItemRequestMapperTest {
         itemRequest.setRequestor(null);
 
         try (MockedStatic<DateTimeUtils> mockedDateTimeUtils = mockStatic(DateTimeUtils.class)) {
-            mockedDateTimeUtils.when(() -> DateTimeUtils.toLocalDateTime(instant)).thenReturn(now);
+            mockedDateTimeUtils.when(() -> DateTimeUtils.toLocalDateTime(itemRequest.getCreated())).thenReturn(now);
 
             ItemRequestDto result = ItemRequestMapper.toItemRequestDto(itemRequest);
 
@@ -71,7 +70,6 @@ class ItemRequestMapperTest {
     @Test
     void toItemRequestWithItemsDto_shouldConvertItemRequestAndItemsToItemRequestWithItemsDto() {
         LocalDateTime now = LocalDateTime.now();
-        Instant instant = now.atZone(java.time.ZoneId.systemDefault()).toInstant();
 
         User requestor = new User();
         requestor.setId(1L);
@@ -85,7 +83,7 @@ class ItemRequestMapperTest {
         List<ItemDto> items = List.of(itemDto);
 
         try (MockedStatic<DateTimeUtils> mockedDateTimeUtils = mockStatic(DateTimeUtils.class)) {
-            mockedDateTimeUtils.when(() -> DateTimeUtils.toLocalDateTime(instant)).thenReturn(now);
+            mockedDateTimeUtils.when(() -> DateTimeUtils.toLocalDateTime(itemRequest.getCreated())).thenReturn(now);
 
             ItemRequestWithItemsDto result = ItemRequestMapper.toItemRequestWithItemsDto(itemRequest, items);
 

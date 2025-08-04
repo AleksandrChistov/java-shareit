@@ -123,7 +123,7 @@ class ItemMapperTest {
             assertEquals(1L, result.getRequestId());
             assertNotNull(result.getComments());
             assertEquals(1, result.getComments().size());
-            assertEquals(commentDto, result.getComments().get(0));
+            assertEquals(commentDto, result.getComments().getFirst());
         }
     }
 
