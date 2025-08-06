@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,40 +57,40 @@ class BookingServiceImplIntegrationTest {
         Instant nowUtc = Instant.now();
 
         Booking pastBooking = new Booking();
-        pastBooking.setStart(nowUtc.minusSeconds(86400)); // 1 день назад
-        pastBooking.setEnd(nowUtc.minusSeconds(3600));    // 1 час назад
+        pastBooking.setStart(nowUtc.minus(1, ChronoUnit.DAYS));
+        pastBooking.setEnd(nowUtc.minus(1, ChronoUnit.HOURS));
         pastBooking.setItem(item);
         pastBooking.setBooker(booker);
         pastBooking.setStatus(BookingStatus.APPROVED);
         em.persist(pastBooking);
 
         Booking currentBooking = new Booking();
-        currentBooking.setStart(nowUtc.minusSeconds(1800)); // 30 минут назад
-        currentBooking.setEnd(nowUtc.plusSeconds(1800));    // через 30 минут
+        currentBooking.setStart(nowUtc.minus(30, ChronoUnit.MINUTES));
+        currentBooking.setEnd(nowUtc.plus(30, ChronoUnit.MINUTES));
         currentBooking.setItem(item);
         currentBooking.setBooker(booker);
         currentBooking.setStatus(BookingStatus.APPROVED);
         em.persist(currentBooking);
 
         Booking futureBooking = new Booking();
-        futureBooking.setStart(nowUtc.plusSeconds(3600));  // через 1 час
-        futureBooking.setEnd(nowUtc.plusSeconds(7200));     // через 2 часа
+        futureBooking.setStart(nowUtc.plus(1, ChronoUnit.HOURS));
+        futureBooking.setEnd(nowUtc.plus(2, ChronoUnit.HOURS));
         futureBooking.setItem(item);
         futureBooking.setBooker(booker);
         futureBooking.setStatus(BookingStatus.APPROVED);
         em.persist(futureBooking);
 
         Booking waitingBooking = new Booking();
-        waitingBooking.setStart(nowUtc.plusSeconds(10800)); // через 3 часа
-        waitingBooking.setEnd(nowUtc.plusSeconds(14400));   // через 4 часа
+        waitingBooking.setStart(nowUtc.plus(3, ChronoUnit.HOURS));
+        waitingBooking.setEnd(nowUtc.plus(4, ChronoUnit.HOURS));
         waitingBooking.setItem(item);
         waitingBooking.setBooker(booker);
         waitingBooking.setStatus(BookingStatus.WAITING);
         em.persist(waitingBooking);
 
         Booking rejectedBooking = new Booking();
-        rejectedBooking.setStart(nowUtc.plusSeconds(18000)); // через 5 часов
-        rejectedBooking.setEnd(nowUtc.plusSeconds(21600));    // через 6 часов
+        rejectedBooking.setStart(nowUtc.plus(5, ChronoUnit.HOURS));
+        rejectedBooking.setEnd(nowUtc.plus(6, ChronoUnit.HOURS));
         rejectedBooking.setItem(item);
         rejectedBooking.setBooker(booker);
         rejectedBooking.setStatus(BookingStatus.REJECTED);
